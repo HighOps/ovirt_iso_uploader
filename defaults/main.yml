@@ -1,0 +1,5 @@
+ovirt_iso_uploader_engine_user: admin@internal
+ovirt_iso_uploader_engine_password: somepassword
+ovirt_iso_uploader_engine_fqdn: engine.example.com:443
+ovirt_iso_uploader_iso_url: http://iso.example.com
+ovirt_iso_uploader_images: ubuntu_14_04.iso

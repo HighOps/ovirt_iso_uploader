@@ -1,0 +1,26 @@
+- name: Install ovirt-iso-uploader
+  yum: name={{item}} state=installed
+  with_items:
+   - ovirt-iso-uploader
+   - wget
+
+- name: ovirt iso uploader conf file
+  template: src=isouploader.conf dest=/etc/ovirt-engine/isouploader.conf
+  
+- name: create iso folder
+  file: path=/root/iso/ state=directory
+
+- name: download checksum file
+  get_url: url={{ovirt_iso_uploader_iso_url}}/{{ item }}.chk dest=/root/iso/
+  register: download_iso
+  with_items: "{{ovirt_iso_uploader_images}}"
+
+- name: download iso
+  get_url: url={{ovirt_iso_uploader_iso_url}}/{{ item }} dest=/root/iso/
+  when: download_iso.changed
+  with_items: "{{ovirt_iso_uploader_images}}"
+  
+- name: upload iso to ovirt
+  command: ovirt-iso-uploader upload -i iso /root/iso/{{ item }} --force --insecure
+  when: download_iso.changed  
+  with_items: "{{ovirt_iso_uploader_images}}"
